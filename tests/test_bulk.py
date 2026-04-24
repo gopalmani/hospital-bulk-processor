@@ -23,6 +23,16 @@ def _csv_file(content: str):
     return {"file": ("hospitals.csv", content.encode("utf-8"), "text/csv")}
 
 
+def test_root_returns_welcome_message(client):
+    response = client.get("/")
+
+    assert response.status_code == 200
+    assert "text/html" in response.headers["content-type"]
+    assert "Hospital Bulk Processing System" in response.text
+    assert "/hospitals/bulk" in response.text
+    assert "/docs" in response.text
+
+
 def test_valid_csv_upload_returns_202(client, monkeypatch):
     async def noop_process_bulk_job(batch_id, rows):
         return None
